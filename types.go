@@ -1,7 +1,5 @@
 package lobster
 
-import "github.com/Kamva/shark/exceptions"
-
 // Listener is an interface for event listeners.
 type Listener interface {
 	// Construct initialize listener dependencies.
@@ -29,7 +27,7 @@ type EventListener struct {
 // Event is concurrency event handler.
 type Event interface {
 	// Fire runs the event listeners assigned to given event.
-	Fire(event string, data interface{}) []exceptions.RoutineException
+	Fire(event string, data interface{}) bool
 
 	// RecoverRoutinePanic recover panics inside routines and push it to lobster
 	// error channel.

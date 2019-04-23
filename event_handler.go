@@ -16,7 +16,7 @@ type Lobster struct {
 }
 
 // Fire runs the event listeners assigned to given event.
-func (l *Lobster) Fire(event string, data interface{}) []exceptions.RoutineException {
+func (l *Lobster) Fire(event string, data interface{}) bool {
 	for _, listener := range l.eventMap[event].Listener {
 		l.waitGroup.Add(1)
 		go listener.Construct().Handle(l, data)
@@ -39,14 +39,14 @@ func (l *Lobster) Fire(event string, data interface{}) []exceptions.RoutineExcep
 			RollBack(data)
 		}
 
-		return criticalErrors
+		return false
 	}
 
 	if len(errors) > 0 {
 		sentry.CaptureRoutineException(errors)
 	}
 
-	return nil
+	return true
 }
 
 // RecoverRoutinePanic recover panics inside routines and push it to lobster
