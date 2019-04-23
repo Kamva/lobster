@@ -17,9 +17,9 @@ type Lobster struct {
 
 // Fire runs the event listeners assigned to given event.
 func (l *Lobster) Fire(event string, data interface{}) []exceptions.RoutineException {
-	for _, function := range l.eventMap[event].Listener {
+	for _, listener := range l.eventMap[event].Listener {
 		l.waitGroup.Add(1)
-		go function(l, data)
+		go listener.Construct().Handle(l, data)
 	}
 
 	l.waitGroup.Wait()
