@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Kamva/shark"
-
 	"github.com/Kamva/shark/exceptions"
+	"github.com/Kamva/shark/sentry"
 )
 
 // Lobster is concurrency event handler.
@@ -44,7 +43,7 @@ func (l *Lobster) Fire(event string, data interface{}) []exceptions.RoutineExcep
 	}
 
 	if len(errors) > 0 {
-		shark.CaptureRoutineException(errors)
+		sentry.CaptureRoutineException(errors)
 	}
 
 	return nil
