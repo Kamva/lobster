@@ -36,7 +36,7 @@ func (l *Lobster) Fire(event string, data interface{}) bool {
 
 	if len(criticalErrors) > 0 {
 		if RollBack := l.eventMap[event].RollBack; RollBack != nil {
-			RollBack(data)
+			RollBack(data, criticalErrors)
 		}
 
 		return false

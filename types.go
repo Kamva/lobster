@@ -1,5 +1,7 @@
 package lobster
 
+import "github.com/Kamva/shark/exceptions"
+
 // Listener is an interface for event listeners.
 type Listener interface {
 	// Construct initialize listener dependencies.
@@ -10,7 +12,7 @@ type Listener interface {
 }
 
 // Rollback is a function that runs when any critical error is panicked.
-type Rollback func(interface{})
+type Rollback func(interface{}, []exceptions.RoutineException)
 
 // EventMap is a map of event names and their event listeners
 type EventMap map[string]EventListener
