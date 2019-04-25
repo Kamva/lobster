@@ -26,12 +26,18 @@ type EventListener struct {
 	RollBack Rollback
 }
 
+// Output is a map of outputs from listener.
+type Output map[string]interface{}
+
 // Event is concurrency event handler.
 type Event interface {
 	// Fire runs the event listeners assigned to given event.
-	Fire(event string, data interface{}) bool
+	Fire(event string, data interface{}) (bool, Output)
 
 	// RecoverRoutinePanic recover panics inside routines and push it to lobster
 	// error channel.
 	RecoverRoutinePanic(caller string, critical bool)
+
+	// AddOutput add an output to the list of listener output.
+	AddOutput(caller string, data interface{})
 }

@@ -13,10 +13,11 @@ type Lobster struct {
 	eventMap  EventMap
 	waitGroup *sync.WaitGroup
 	channel   chan exceptions.RoutineException
+	output    Output
 }
 
 // Fire runs the event listeners assigned to given event.
-func (l *Lobster) Fire(event string, data interface{}) bool {
+func (l *Lobster) Fire(event string, data interface{}) (bool, Output) {
 	for _, listener := range l.eventMap[event].Listener {
 		l.waitGroup.Add(1)
 		go listener.Construct().Handle(l, data)
@@ -39,14 +40,14 @@ func (l *Lobster) Fire(event string, data interface{}) bool {
 			RollBack(data, criticalErrors)
 		}
 
-		return false
+		return false, l.output
 	}
 
 	if len(errors) > 0 {
 		sentry.CaptureRoutineException(errors)
 	}
 
-	return true
+	return true, l.output
 }
 
 // RecoverRoutinePanic recover panics inside routines and push it to lobster
@@ -71,12 +72,18 @@ func (l *Lobster) RecoverRoutinePanic(caller string, critical bool) {
 	}
 }
 
+// AddOutput add an output to the list of listener output.
+func (l *Lobster) AddOutput(caller string, data interface{}) {
+	l.output[caller] = data
+}
+
 // NewEvent instantiate lobster object
 func NewEvent(eventMap EventMap) *Lobster {
 	return &Lobster{
 		eventMap:  eventMap,
 		waitGroup: getWaitGroup(),
 		channel:   make(chan exceptions.RoutineException, 10),
+		output:    make(Output),
 	}
 }
 
