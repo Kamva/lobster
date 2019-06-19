@@ -40,6 +40,8 @@ func (l *Lobster) Fire(event string, data interface{}) (bool, Output) {
 			RollBack(data, criticalErrors)
 		}
 
+		sentry.CaptureRoutineException(errors)
+
 		return false, l.output
 	}
 
