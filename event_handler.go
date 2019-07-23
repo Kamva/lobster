@@ -24,7 +24,6 @@ func (l *Lobster) Fire(event string, data interface{}) (bool, Output) {
 	}
 
 	l.waitGroup.Wait()
-	close(l.channel)
 
 	var errors []exceptions.RoutineException
 	var criticalErrors []exceptions.RoutineException
